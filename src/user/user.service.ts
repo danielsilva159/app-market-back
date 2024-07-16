@@ -10,20 +10,26 @@ export class UserService {
   async create(createUserDto: CreateUserDto) {
     const saltOrRounds = 10;
     const hash = await bcrypt.hash(createUserDto.password, saltOrRounds);
-    const user = this.prisma.user.findFirst({
+    const user = await this.prisma.user.findFirst({
       where: { email: createUserDto.email },
     });
+
     if (user) {
       throw new Error('Email already exists in the database');
     }
+    console.log(createUserDto);
 
-    this.prisma.user.create({
+    await this.prisma.user.create({
       data: {
         name: createUserDto.name,
         email: createUserDto.email,
         password: hash,
       },
     });
+    return {
+      name: createUserDto.name,
+      email: createUserDto.email,
+    };
   }
 
   findAll() {
