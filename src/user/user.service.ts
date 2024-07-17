@@ -47,4 +47,7 @@ export class UserService {
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
+  async findEmail(email: string) {
+    return await this.prisma.user.findFirst({ where: { email } });
+  }
 }
